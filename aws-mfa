@@ -5,7 +5,10 @@ unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 unset AWS_SESSION_TOKEN
 
-read -p 'Input MFA Code: ' AWS_MFA_CODE
+# bash
+#read -p 'Input MFA Code: ' AWS_MFA_CODE
+# zsh
+read 'AWS_MFA_CODE?Input MFA Code: '
 eval `aws sts get-session-token \
 --serial-number $AWS_MFA_DEVICE_ARN \
 --token-code $AWS_MFA_CODE | \
