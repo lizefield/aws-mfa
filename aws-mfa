@@ -1,0 +1,17 @@
+#!/bin/sh
+AWS_MFA_DEVICE_ARN="arn:aws:iam::123412341234:mfa/UserName"
+
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset AWS_SESSION_TOKEN
+
+read -p 'Input MFA Code: ' AWS_MFA_CODE
+eval `aws sts get-session-token \
+--serial-number $AWS_MFA_DEVICE_ARN \
+--token-code $AWS_MFA_CODE | \
+awk ' $1 == "\"AccessKeyId\":" { gsub(/\"/,""); gsub(/,/,""); print "export AWS_ACCESS_KEY_ID="$2 } $1 == "\"SecretAccessKey\":" { gsub(/\"/,""); gsub(/,/,""); print "export AWS_SECRET_ACCESS_KEY="$2 } $1 == "\"SessionToken\":" { gsub(/\"/,""); gsub(/,/,""); print "export AWS_SESSION_TOKEN="$2 } '`
+
+echo $AWS_ACCESS_KEY_ID
+echo $AWS_SECRET_ACCESS_KEY
+echo $AWS_SESSION_TOKEN
+
